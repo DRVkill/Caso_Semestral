@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="140dp"
+    android:height="140dp"
+    android:viewportWidth="140"
+    android:viewportHeight="140">
+
+    <!-- Nube de alerta -->
+    <path
+        android:fillColor="#7FB2FF"
+        android:pathData="M42,50 C42,34 56,24 70,28 C78,14 100,16 104,32 C118,32 124,46 118,54 C112,60 104,60 96,60 L50,60 C42,60 42,50 42,50 Z" />
+
+    <!-- Torre de racks apilados -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M30,72 L110,72 L110,84 L30,84 Z" />
+    <path
+        android:fillColor="#4D7CFE"
+        android:pathData="M30,88 L110,88 L110,100 L30,100 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M30,104 L110,104 L110,116 L30,116 Z" />
+    <path
+        android:fillColor="#FFD54F"
+        android:pathData="M96,78 L104,78 L104,80 L96,80 Z" />
+    <path
+        android:fillColor="#FFD54F"
+        android:pathData="M96,94 L104,94 L104,96 L96,96 Z" />
+    <path
+        android:fillColor="#FFD54F"
+        android:pathData="M96,110 L104,110 L104,112 L96,112 Z" />
+</vector>

@@ -1,31 +1,26 @@
 package com.duoc.rackalerta
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.ui.Modifier
-import com.duoc.rackalerta.ui.login.LoginScreen
-import com.duoc.rackalerta.ui.theme.RackalertaTheme
+import com.duoc.rackalerta.data.RepositorioUsuario
+import com.duoc.rackalerta.data.local.BaseDatosApp
+import com.duoc.rackalerta.ui.navigation.NavegacionRackalerta
+import com.duoc.rackalerta.ui.theme.TemaRackalerta
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Se crean aquí una sola vez y se pasan a las pantallas por parámetro.
+        val baseDatos = BaseDatosApp.crear(this)
+        val repositorioUsuario = RepositorioUsuario(baseDatos.usuarioDao())
+
         setContent {
-            RackalertaTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    LoginScreen(
-                        onLoginSuccess = { email ->
-                            Toast.makeText(this, "Bienvenido, $email", Toast.LENGTH_SHORT).show()
-                        },
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+            TemaRackalerta {
+                NavegacionRackalerta(repositorioUsuario = repositorioUsuario)
             }
         }
     }
