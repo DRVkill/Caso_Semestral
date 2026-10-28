@@ -14,7 +14,7 @@ import com.duoc.rackalerta.model.EstadoRack
 import com.duoc.rackalerta.ui.theme.ColorDisponible
 import com.duoc.rackalerta.ui.theme.ColorCritico
 
-/** Etiqueta de estado que cambia de color con una animación suave. */
+/** Etiqueta de estado. */
 @Composable
 fun InsigniaEstado(estado: EstadoRack, modifier: Modifier = Modifier) {
     val colorInsignia by animateColorAsState(

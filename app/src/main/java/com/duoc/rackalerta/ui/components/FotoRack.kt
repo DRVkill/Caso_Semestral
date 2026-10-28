@@ -19,10 +19,9 @@ import androidx.compose.ui.unit.dp
 import com.duoc.rackalerta.R
 import com.duoc.rackalerta.ui.theme.AzulSuave
 
-/**
- * Muestra la foto del rack guardada localmente. Si no hay foto, muestra
- * el logo de rack como marcador.
- */
+
+/** Muestra la foto del rack que se guardó local. Si no tiene, se muestra el logo de este como placeholder. */
+
 @Composable
 fun FotoRack(rutaFoto: String?, modifier: Modifier = Modifier) {
     val foto = remember(rutaFoto) {

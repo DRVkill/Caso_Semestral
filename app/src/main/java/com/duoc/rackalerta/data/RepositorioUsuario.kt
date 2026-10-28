@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 /** Acceso a los datos del usuario guardados en Room. */
 class RepositorioUsuario(private val usuarioDao: UsuarioDao) {
 
-    /** Usuario con sesión iniciada. Vive solo mientras la app está abierta. */
+    /** Usuario que tiene sesión iniciada, pero solo existe mientras la app se encuentre abierta. */
     var usuarioActual: String? = null
         private set
 
@@ -19,7 +19,7 @@ class RepositorioUsuario(private val usuarioDao: UsuarioDao) {
         usuarioActual = null
     }
 
-    /** Crea el usuario de demostración la primera vez que se abre la app. */
+    /** Crear usuario demo al abrir la app por primera vez */
     suspend fun crearUsuarioDemoSiFalta() {
         usuarioDao.insertarSiNoExiste(
             UsuarioEntidad(

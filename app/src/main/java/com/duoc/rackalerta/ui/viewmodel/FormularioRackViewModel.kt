@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-/** Estado del formulario. [idRack] es null cuando se crea un rack nuevo. */
+/** Estado del formulario. idRack es null al crear un rack nuevo. */
 data class EstadoFormularioRack(
     val idRack: Long? = null,
     val nombre: String = "",
@@ -74,7 +74,7 @@ class FormularioRackViewModel(idRack: Long?) : ViewModel() {
         it.copy(rutaFoto = rutaFoto, estado = EstadoRack.estadoAleatorio())
     }
 
-    /** Muestra el modal de confirmación solo si el formulario es válido. */
+
     fun solicitarGuardado() {
         _estadoUi.update { it.copy(enviado = true) }
         if (!validar(_estadoUi.value).tieneErrores) {

@@ -50,7 +50,7 @@ class CambiarContrasenaViewModel(private val repositorioUsuario: RepositorioUsua
 
     fun alEscribirRepetir(valor: String) = _estadoUi.update { it.copy(repetirContrasena = valor) }
 
-    /** Valida los campos y compara la contraseña actual contra Room. */
+    /** Valida los campos y compara la contraseña actual con Room */
     fun enviar() {
         _estadoUi.update { it.copy(enviado = true) }
         val actual = _estadoUi.value

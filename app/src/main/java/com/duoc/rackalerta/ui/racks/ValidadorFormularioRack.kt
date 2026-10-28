@@ -1,6 +1,8 @@
 package com.duoc.rackalerta.ui.racks
 
-/** Reglas del formulario de rack. Lógica pura, fácil de testear. */
+
+/** Formulario de rack..*/
+
 object ValidadorFormularioRack {
     const val MIN_LARGO_NOMBRE = 3
     const val MIN_NUMERO_RACK = 1

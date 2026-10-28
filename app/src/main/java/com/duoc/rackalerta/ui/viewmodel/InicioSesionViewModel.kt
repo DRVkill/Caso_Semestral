@@ -17,7 +17,6 @@ data class EstadoInicioSesion(
     val enviado: Boolean = false,
     val errorLogin: String? = null
 ) {
-    // Los errores de campo solo aparecen después del primer intento de ingreso.
     val errorUsuario: String?
         get() = if (enviado) ValidadorLogin.errorUsuario(usuario) else null
 
@@ -39,7 +38,7 @@ class InicioSesionViewModel(private val repositorioUsuario: RepositorioUsuario) 
     fun alternarMostrarContrasena() =
         _estadoUi.update { it.copy(mostrarContrasena = !it.mostrarContrasena) }
 
-    /** Valida el formulario, compara con Room y, si coincide, avisa con [alExito]. */
+    /** Valida el formulario, compara con Room y, si coincide, avisa con alExito. */
     fun enviar(alExito: () -> Unit) {
         val actual = _estadoUi.value
         _estadoUi.update { it.copy(enviado = true) }
@@ -48,7 +47,6 @@ class InicioSesionViewModel(private val repositorioUsuario: RepositorioUsuario) 
         ) return
 
         viewModelScope.launch {
-            // Garantiza que el usuario de demo exista antes de comparar.
             repositorioUsuario.crearUsuarioDemoSiFalta()
             val usuarioEncontrado = repositorioUsuario.buscarUsuario(actual.usuario)
             if (usuarioEncontrado != null && usuarioEncontrado.contrasena == actual.contrasena) {

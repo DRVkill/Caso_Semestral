@@ -8,10 +8,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
-/**
- * Inventario de racks en memoria. Los 5 racks iniciales están definidos
- * en código; los que se crean después se pierden al reiniciar la app.
- */
+
+/** Inventario de racks en memoria, cinco racks iniciales se encuentran definidos en código, los creados en la sesión se pierden al reiniciar la app.*/
+
 object RepositorioRacks {
 
     private val racksPorDefecto: List<Rack> = listOf(

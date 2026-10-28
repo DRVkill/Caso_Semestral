@@ -105,7 +105,7 @@ private fun FilaDatoPerfil(etiqueta: String, valor: String) {
     }
 }
 
-/** Credencial digital del usuario, con estilo de tarjeta de identificación. */
+/** Credencial digital del usuario.*/
 @Composable
 private fun TarjetaCredencial(nombre: String, cargo: String, usuario: String) {
     Card(

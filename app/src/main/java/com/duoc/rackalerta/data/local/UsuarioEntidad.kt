@@ -3,7 +3,7 @@ package com.duoc.rackalerta.data.local
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-/** Usuario guardado en Room. Se persiste entre reinicios de la app. */
+/** El usuario se guarda en room y se mantiene entre los reinicios de app.*/
 @Entity(tableName = "usuarios")
 data class UsuarioEntidad(
     @PrimaryKey val usuario: String,

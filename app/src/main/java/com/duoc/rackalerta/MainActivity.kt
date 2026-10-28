@@ -14,7 +14,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        // Se crean aquí una sola vez y se pasan a las pantallas por parámetro.
         val baseDatos = BaseDatosApp.crear(this)
         val repositorioUsuario = RepositorioUsuario(baseDatos.usuarioDao())
 

@@ -57,10 +57,8 @@ import com.duoc.rackalerta.ui.theme.ColorDisponible
 import com.duoc.rackalerta.ui.theme.ColorCritico
 import java.io.File
 
-/**
- * Formulario para crear o editar un rack.
- * [idRack] es null cuando se crea un rack nuevo.
- */
+
+/** Formulario para creación o edición de rack, idRack es null si se crea uno nuevo.*/
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormularioRackVista(
@@ -76,7 +74,8 @@ fun FormularioRackVista(
     val errores = modeloVista.validar(estadoUi)
     val context = LocalContext.current
 
-    // Archivo donde la cámara escribe la foto que se está tomando.
+
+    /** Aquí la cámara escribe la foto que se está tomando.*/
     var fotoPendiente by remember { mutableStateOf<File?>(null) }
 
     val lanzadorCamara = rememberLauncherForActivityResult(
@@ -86,7 +85,7 @@ fun FormularioRackVista(
         if (fotoTomada && archivo != null) modeloVista.alCapturarFoto(archivo.absolutePath)
     }
 
-    // Primero se pide el permiso de cámara; si se concede, se abre la cámara.
+    /** Se pide permiso primero, al conceder se abre la cámara.*/
     val lanzadorPermisoCamara = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { concedido ->
@@ -139,7 +138,8 @@ fun FormularioRackVista(
                 Text(it, color = MaterialTheme.colorScheme.error)
             }
 
-            // La alerta aparece con animación cuando la foto asigna un estado.
+            /** Aparece una alerta animada cuando la foto asigna un estado..*/
+
             AnimatedVisibility(
                 visible = estadoUi.estado != null,
                 enter = fadeIn(tween(400)) + expandVertically(),
@@ -148,7 +148,8 @@ fun FormularioRackVista(
                 estadoUi.estado?.let { TarjetaAlertaEstado(it) }
             }
 
-            // En un rack nuevo los campos aparecen solo después de tomar la foto.
+            /** Si es un rack nuevo, los campos solo aparecen al tomar la foto..*/
+
             AnimatedVisibility(
                 visible = !estadoUi.esRackNuevo || estadoUi.rutaFoto != null,
                 enter = fadeIn(tween(400)) + expandVertically(),
@@ -216,6 +217,7 @@ fun FormularioRackVista(
 }
 
 /** Tarjeta de alerta que cambia de color según el estado asignado. */
+
 @Composable
 private fun TarjetaAlertaEstado(estado: EstadoRack) {
     val colorTarjeta by animateColorAsState(

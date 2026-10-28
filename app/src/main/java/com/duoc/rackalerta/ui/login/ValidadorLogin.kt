@@ -1,6 +1,7 @@
 package com.duoc.rackalerta.ui.login
 
-/** Reglas de validación del formulario de login. Lógica pura, fácil de testear. */
+
+/** Requisitos para validación del formulario. */
 object ValidadorLogin {
     const val MIN_LARGO_USUARIO = 3
     const val MIN_LARGO_CONTRASENA = 6

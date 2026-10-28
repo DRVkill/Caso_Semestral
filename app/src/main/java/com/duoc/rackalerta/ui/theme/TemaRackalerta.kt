@@ -27,7 +27,7 @@ fun TemaRackalerta(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    // Se usa la paleta fija del mockup, no el color dinámico del sistema.
+
     MaterialTheme(
         colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme,
         typography = Typography,
