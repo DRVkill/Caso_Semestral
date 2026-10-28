@@ -14,33 +14,10 @@ Proyecto semestral – Evaluación 2, Duoc UC.
 - **Perfil** con datos del usuario y credencial digital.
 - **Cambio de contraseña** con validación y modal de confirmación.
 
-## Persistencia
-
-| Dato | Dónde se guarda | ¿Sobrevive a un reinicio? |
-|---|---|---|
-| Usuario y contraseña | Room (`rackalerta.db`) | Sí |
-| 5 racks iniciales | Código (`RackRepository`) | Siempre vuelven los mismos 5 |
-| Racks creados o editados | Memoria | No |
-| Fotos de racks | Caché de la app (`rack_photos/`) | No, se borran al iniciar |
-
 ## Credenciales de prueba
 
 - Usuario: `admin`
 - Contraseña: `123456`
-
-## Arquitectura
-
-```
-ui/            Pantallas Compose y ViewModels (MVVM)
-  login/       LoginScreen, LoginViewModel, LoginValidator
-  racks/       Listado, detalle y formulario de racks
-  profile/     Perfil y cambio de contraseña
-  navigation/  Rutas con Navigation Compose
-  components/  StatusBadge, RackPhoto
-data/          Repositorios (UserRepository, RackRepository) y PhotoStorage
-data/local/    Room: entidad, DAO y base de datos
-model/         Rack y RackStatus
-```
 
 ## Uso de recursos nativos
 
