@@ -1,9 +1,10 @@
-package com.duoc.rackalerta.ui.viewmodel
+package com.duoc.rackalerta.viewmodel
 import com.duoc.rackalerta.ui.login.ValidadorLogin
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.duoc.rackalerta.data.RepositorioUsuario
+import com.duoc.rackalerta.data.remote.ErroresApi
+import com.duoc.rackalerta.repository.RepositorioUsuario
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,14 +12,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class EstadoInicioSesion(
-    val usuario: String = "",
+    val correo: String = "",
     val contrasena: String = "",
     val mostrarContrasena: Boolean = false,
     val enviado: Boolean = false,
+    val cargando: Boolean = false,
     val errorLogin: String? = null
 ) {
-    val errorUsuario: String?
-        get() = if (enviado) ValidadorLogin.errorUsuario(usuario) else null
+    val errorCorreo: String?
+        get() = if (enviado) ValidadorLogin.errorCorreo(correo) else null
 
     val errorContrasena: String?
         get() = if (enviado) ValidadorLogin.errorContrasena(contrasena) else null
@@ -29,8 +31,8 @@ class InicioSesionViewModel(private val repositorioUsuario: RepositorioUsuario) 
     private val _estadoUi = MutableStateFlow(EstadoInicioSesion())
     val estadoUi: StateFlow<EstadoInicioSesion> = _estadoUi.asStateFlow()
 
-    fun alEscribirUsuario(valor: String) =
-        _estadoUi.update { it.copy(usuario = valor, errorLogin = null) }
+    fun alEscribirCorreo(valor: String) =
+        _estadoUi.update { it.copy(correo = valor, errorLogin = null) }
 
     fun alEscribirContrasena(valor: String) =
         _estadoUi.update { it.copy(contrasena = valor, errorLogin = null) }
@@ -38,22 +40,32 @@ class InicioSesionViewModel(private val repositorioUsuario: RepositorioUsuario) 
     fun alternarMostrarContrasena() =
         _estadoUi.update { it.copy(mostrarContrasena = !it.mostrarContrasena) }
 
-    /** Valida el formulario, compara con Room y, si coincide, avisa con alExito. */
+    /** Valida el formulario, inicia sesión en Xano y, si funciona, avisa con alExito. */
     fun enviar(alExito: () -> Unit) {
         val actual = _estadoUi.value
         _estadoUi.update { it.copy(enviado = true) }
-        if (ValidadorLogin.errorUsuario(actual.usuario) != null ||
+        if (actual.cargando ||
+            ValidadorLogin.errorCorreo(actual.correo) != null ||
             ValidadorLogin.errorContrasena(actual.contrasena) != null
         ) return
 
         viewModelScope.launch {
-            repositorioUsuario.crearUsuarioDemoSiFalta()
-            val usuarioEncontrado = repositorioUsuario.buscarUsuario(actual.usuario)
-            if (usuarioEncontrado != null && usuarioEncontrado.contrasena == actual.contrasena) {
-                repositorioUsuario.iniciarSesion(usuarioEncontrado.usuario)
+            _estadoUi.update { it.copy(cargando = true, errorLogin = null) }
+            try {
+                repositorioUsuario.iniciarSesion(actual.correo, actual.contrasena)
+                _estadoUi.update { it.copy(cargando = false) }
                 alExito()
-            } else {
-                _estadoUi.update { it.copy(errorLogin = "Usuario o contraseña incorrectos") }
+            } catch (error: Exception) {
+                _estadoUi.update {
+                    it.copy(
+                        cargando = false,
+                        errorLogin = ErroresApi.mensaje(
+                            error,
+                            mensaje401 = "Correo o contraseña incorrectos",
+                            mensaje403 = "Correo o contraseña incorrectos"
+                        )
+                    )
+                }
             }
         }
     }

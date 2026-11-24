@@ -4,21 +4,20 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UsuarioDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertarSiNoExiste(usuario: UsuarioEntidad): Long
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun guardar(usuario: UsuarioEntidad)
 
-    @Update
-    suspend fun actualizar(usuario: UsuarioEntidad)
+    @Query("SELECT * FROM usuarios LIMIT 1")
+    suspend fun obtenerSesion(): UsuarioEntidad?
 
-    @Query("SELECT * FROM usuarios WHERE usuario = :usuario LIMIT 1")
-    suspend fun buscarPorUsuario(usuario: String): UsuarioEntidad?
+    @Query("SELECT * FROM usuarios LIMIT 1")
+    fun observarSesion(): Flow<UsuarioEntidad?>
 
-    @Query("SELECT * FROM usuarios WHERE usuario = :usuario LIMIT 1")
-    fun observarPorUsuario(usuario: String): Flow<UsuarioEntidad?>
+    @Query("DELETE FROM usuarios")
+    suspend fun borrarSesiones()
 }

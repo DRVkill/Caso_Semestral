@@ -1,9 +1,16 @@
-package com.duoc.rackalerta.ui.viewmodel
+package com.duoc.rackalerta.viewmodel
 import com.duoc.rackalerta.ui.racks.ValidadorFormularioRack
 
 import androidx.lifecycle.ViewModel
-import com.duoc.rackalerta.data.RepositorioRacks
+import androidx.lifecycle.viewModelScope
+import com.duoc.rackalerta.data.AlmacenFotos
+import com.duoc.rackalerta.data.remote.ErroresApi
+import com.duoc.rackalerta.repository.RepositorioRacks
 import com.duoc.rackalerta.model.EstadoRack
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,6 +25,8 @@ data class EstadoFormularioRack(
     val rutaFoto: String? = null,
     val enviado: Boolean = false,
     val mostrarDialogoConfirmacion: Boolean = false,
+    val guardando: Boolean = false,
+    val errorGuardado: String? = null,
     val guardado: Boolean = false
 ) {
     val esRackNuevo: Boolean get() = idRack == null
@@ -82,20 +91,35 @@ class FormularioRackViewModel(idRack: Long?) : ViewModel() {
         }
     }
 
-    fun cerrarDialogoConfirmacion() = _estadoUi.update { it.copy(mostrarDialogoConfirmacion = false) }
+    fun cerrarDialogoConfirmacion() = _estadoUi.update {
+        if (it.guardando) it else it.copy(mostrarDialogoConfirmacion = false, errorGuardado = null)
+    }
 
+    /** Sube el rack a Xano. La foto solo se envía si se tomó una nueva. */
     fun confirmarGuardado() {
         val actual = _estadoUi.value
+        if (actual.guardando) return
         val estado = actual.estado ?: return
         val numero = actual.numero.toInt()
         val nombre = actual.nombre.trim()
+        val rutaFotoNueva = actual.rutaFoto.takeIf { AlmacenFotos.esFotoLocal(it) }
 
-        val idRack = actual.idRack
-        if (idRack == null) {
-            RepositorioRacks.agregarRack(nombre, numero, estado, actual.rutaFoto)
-        } else {
-            RepositorioRacks.actualizarRack(idRack, nombre, numero, estado, actual.rutaFoto)
+        viewModelScope.launch {
+            _estadoUi.update { it.copy(guardando = true, errorGuardado = null) }
+            try {
+                val archivoFoto = rutaFotoNueva?.let { ruta ->
+                    withContext(Dispatchers.IO) { AlmacenFotos.comprimir(File(ruta)) }
+                }
+                val idRack = actual.idRack
+                if (idRack == null) {
+                    RepositorioRacks.agregarRack(nombre, numero, estado, archivoFoto)
+                } else {
+                    RepositorioRacks.actualizarRack(idRack, nombre, numero, estado, archivoFoto)
+                }
+                _estadoUi.update { it.copy(guardando = false, mostrarDialogoConfirmacion = false, guardado = true) }
+            } catch (error: Exception) {
+                _estadoUi.update { it.copy(guardando = false, errorGuardado = ErroresApi.mensaje(error)) }
+            }
         }
-        _estadoUi.update { it.copy(mostrarDialogoConfirmacion = false, guardado = true) }
     }
 }

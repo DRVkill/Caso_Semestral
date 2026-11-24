@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.duoc.rackalerta.data.RepositorioUsuario
+import com.duoc.rackalerta.repository.RepositorioUsuario
 import com.duoc.rackalerta.data.local.BaseDatosApp
 import com.duoc.rackalerta.ui.navigation.NavegacionRackalerta
 import com.duoc.rackalerta.ui.theme.TemaRackalerta

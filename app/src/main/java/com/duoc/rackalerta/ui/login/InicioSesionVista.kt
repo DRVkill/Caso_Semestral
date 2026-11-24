@@ -1,5 +1,5 @@
 package com.duoc.rackalerta.ui.login
-import com.duoc.rackalerta.ui.viewmodel.InicioSesionViewModel
+import com.duoc.rackalerta.viewmodel.InicioSesionViewModel
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,6 +16,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -41,13 +42,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.lifecycle.viewmodel.initializer
 import com.duoc.rackalerta.R
-import com.duoc.rackalerta.data.RepositorioUsuario
+import com.duoc.rackalerta.repository.RepositorioUsuario
 import com.duoc.rackalerta.ui.theme.AzulMarino
 
 @Composable
 fun InicioSesionVista(
     repositorioUsuario: RepositorioUsuario,
     alIniciarSesion: () -> Unit,
+    alIrRegistro: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val modeloVista: InicioSesionViewModel = viewModel(
@@ -84,13 +86,16 @@ fun InicioSesionVista(
         )
 
         OutlinedTextField(
-            value = estadoUi.usuario,
-            onValueChange = modeloVista::alEscribirUsuario,
-            label = { Text("Usuario") },
+            value = estadoUi.correo,
+            onValueChange = modeloVista::alEscribirCorreo,
+            label = { Text("Correo") },
             singleLine = true,
-            isError = estadoUi.errorUsuario != null,
-            supportingText = { estadoUi.errorUsuario?.let { Text(it, color = Color.White) } },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            isError = estadoUi.errorCorreo != null,
+            supportingText = { estadoUi.errorCorreo?.let { Text(it, color = Color.White) } },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Email,
+                imeAction = ImeAction.Next
+            ),
             keyboardActions = KeyboardActions(
                 onNext = { focusManager.moveFocus(FocusDirection.Down) }
             ),
@@ -136,11 +141,20 @@ fun InicioSesionVista(
 
         Button(
             onClick = ::intentarInicioSesion,
+            enabled = !estadoUi.cargando,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(52.dp)
         ) {
-            Text("Iniciar Sesión", fontSize = 16.sp)
+            if (estadoUi.cargando) {
+                CircularProgressIndicator(color = Color.White, strokeWidth = 2.dp, modifier = Modifier.size(22.dp))
+            } else {
+                Text("Iniciar Sesión", fontSize = 16.sp)
+            }
+        }
+
+        TextButton(onClick = alIrRegistro, modifier = Modifier.padding(top = 8.dp)) {
+            Text("¿No tienes cuenta? Regístrate", color = Color.White)
         }
     }
 }

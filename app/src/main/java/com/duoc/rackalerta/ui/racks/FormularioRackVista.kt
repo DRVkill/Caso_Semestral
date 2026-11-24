@@ -1,5 +1,5 @@
 package com.duoc.rackalerta.ui.racks
-import com.duoc.rackalerta.ui.viewmodel.FormularioRackViewModel
+import com.duoc.rackalerta.viewmodel.FormularioRackViewModel
 
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -201,13 +201,21 @@ fun FormularioRackVista(
             onDismissRequest = modeloVista::cerrarDialogoConfirmacion,
             title = { Text("Confirmar rack") },
             text = {
-                Text(
-                    "¿Guardar \"${estadoUi.nombre.trim()}\" (Número ${estadoUi.numero}) " +
-                        "con estado ${estadoUi.estado?.etiqueta ?: "pendiente"}?"
-                )
+                Column {
+                    Text(
+                        "¿Guardar \"${estadoUi.nombre.trim()}\" (Número ${estadoUi.numero}) " +
+                            "con estado ${estadoUi.estado?.etiqueta ?: "pendiente"}?"
+                    )
+                    estadoUi.errorGuardado?.let {
+                        Text(it, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(top = 8.dp))
+                    }
+                }
             },
             confirmButton = {
-                Button(onClick = modeloVista::confirmarGuardado) { Text("Guardar") }
+                Button(
+                    onClick = modeloVista::confirmarGuardado,
+                    enabled = !estadoUi.guardando
+                ) { Text(if (estadoUi.guardando) "Subiendo..." else "Guardar") }
             },
             dismissButton = {
                 TextButton(onClick = modeloVista::cerrarDialogoConfirmacion) { Text("Cancelar") }

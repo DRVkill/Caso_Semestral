@@ -1,6 +1,6 @@
 package com.duoc.rackalerta.ui.components
 
-import android.graphics.BitmapFactory
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -8,7 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -17,15 +18,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.duoc.rackalerta.R
+import com.duoc.rackalerta.data.AlmacenFotos
 import com.duoc.rackalerta.ui.theme.AzulSuave
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 
-/** Muestra la foto del rack que se guardó local. Si no tiene, se muestra el logo de este como placeholder. */
+/** Muestra la foto del rack (desde Xano o recién tomada). Si no tiene, se muestra el logo como placeholder. */
 
 @Composable
 fun FotoRack(rutaFoto: String?, modifier: Modifier = Modifier) {
-    val foto = remember(rutaFoto) {
-        rutaFoto?.let { BitmapFactory.decodeFile(it)?.asImageBitmap() }
+    val foto by produceState<Bitmap?>(initialValue = null, rutaFoto) {
+        value = rutaFoto?.let { ruta -> withContext(Dispatchers.IO) { AlmacenFotos.cargarFoto(ruta) } }
     }
     Box(
         modifier = modifier
@@ -33,9 +37,10 @@ fun FotoRack(rutaFoto: String?, modifier: Modifier = Modifier) {
             .background(AzulSuave),
         contentAlignment = Alignment.Center
     ) {
-        if (foto != null) {
+        val fotoCargada = foto
+        if (fotoCargada != null) {
             Image(
-                bitmap = foto,
+                bitmap = fotoCargada.asImageBitmap(),
                 contentDescription = "Foto del rack",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()

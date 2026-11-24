@@ -1,5 +1,5 @@
 package com.duoc.rackalerta.ui.profile
-import com.duoc.rackalerta.ui.viewmodel.PerfilViewModel
+import com.duoc.rackalerta.viewmodel.PerfilViewModel
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.lifecycle.viewmodel.initializer
-import com.duoc.rackalerta.data.RepositorioUsuario
+import com.duoc.rackalerta.repository.RepositorioUsuario
 import com.duoc.rackalerta.ui.theme.AzulMarino
 import com.duoc.rackalerta.ui.theme.AzulCielo
 
@@ -39,7 +38,6 @@ import com.duoc.rackalerta.ui.theme.AzulCielo
 @Composable
 fun PerfilVista(
     repositorioUsuario: RepositorioUsuario,
-    alIrCambiarContrasena: () -> Unit,
     alCerrarSesion: () -> Unit,
     alVolver: () -> Unit
 ) {
@@ -72,17 +70,8 @@ fun PerfilVista(
                 TarjetaCredencial(
                     nombre = perfil.nombreCompleto,
                     cargo = perfil.cargo,
-                    usuario = perfil.usuario
+                    usuario = perfil.correo
                 )
-            }
-
-            Button(
-                onClick = alIrCambiarContrasena,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp)
-            ) {
-                Text("Cambiar contraseña")
             }
 
             OutlinedButton(
@@ -123,7 +112,7 @@ private fun TarjetaCredencial(nombre: String, cargo: String, usuario: String) {
                 Text(cargo, color = Color.White, style = MaterialTheme.typography.bodyMedium)
             }
             Text(
-                text = usuario.uppercase(),
+                text = usuario,
                 color = Color.White,
                 style = MaterialTheme.typography.labelSmall
             )
